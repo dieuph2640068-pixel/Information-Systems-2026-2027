@@ -11,19 +11,6 @@ A  database to manage information about the magazines that you buy habitually.
 
 2.  CONCEPTUAL MODEL
 
-The conceptual model contains three main entity types and one associative relationship:
-MAGAZINE - Magazine title - ISSN - Issue number - Year
-ARTICLE - Article title - Beginning page - Ending page
-AUTHOR - E-mail address - Name - Affiliation
-
-Relationships: 
-- One MAGAZINE ISSUE contains many ARTICLE records. 
-- Each ARTICLE belongs to one MAGAZINE ISSUE. 
-- ARTICLE and AUTHOR have a many-to-many relationship: 
- + An article has one or more authors, 
- + An author write many articles. 
-
-3.  TABLE
 PUBLICATION(ISSN, publication_name)
 - Primary key: (ISSN)
 
@@ -43,7 +30,7 @@ ARTICLE_AUTHOR(author_order, article_id, author_id)
 - Foreign key: (article_id) references ARTICLE
 - Foreign key: (author_id) references AUTHOR
 
-4.SQL COMMANDS
+3.SQL COMMANDS
 
 -- Create the database
 CREATE DATABASE magazine;
@@ -102,16 +89,16 @@ CREATE TABLE ARTICLE_AUTHOR (
 );
 
 
-5.  DESCRIBE COMMANDS AND EXPECTED OUTPUTS
+4.  DESCRIBE COMMANDS AND EXPECTED OUTPUTS
 
-5.1 DESCRIBE PUBLICATION;
+1 DESCRIBE PUBLICATION;
 
 # Field, Type, Null, Key, Default, Extra
 'ISSN', 'varchar(20)', 'NO', 'PRI', NULL, ''
 'publication_name', 'varchar(255)', 'YES', '', NULL, ''
 
 
-5.2 DESCRIBE MAGAZINE;
+2 DESCRIBE MAGAZINE;
 
 # Field, Type, Null, Key, Default, Extra
 'issue_number', 'int', 'NO', 'PRI', NULL, ''
@@ -119,7 +106,7 @@ CREATE TABLE ARTICLE_AUTHOR (
 'ISSN', 'varchar(20)', 'NO', 'PRI', NULL, ''
 'year', 'int', 'NO', 'PRI', NULL, ''
 
-5.3 DESCRIBE ARTICLE;
+3 DESCRIBE ARTICLE;
 
 # Field, Type, Null, Key, Default, Extra
 'article_id', 'int', 'NO', 'PRI', NULL, ''
@@ -130,7 +117,7 @@ CREATE TABLE ARTICLE_AUTHOR (
 'issue_number', 'int', 'YES', '', NULL, ''
 'year', 'int', 'YES', '', NULL, ''
 
-5.4 DESCRIBE AUTHOR;
+4 DESCRIBE AUTHOR;
 
 # Field, Type, Null, Key, Default, Extra
 'author_id', 'int', 'NO', 'PRI', NULL, ''
@@ -139,7 +126,7 @@ CREATE TABLE ARTICLE_AUTHOR (
 'affiliation', 'varchar(255)', 'YES', '', NULL, ''
 
 
-5.4 DESCRIBE ARTICLE_AUTHOR;
+5 DESCRIBE ARTICLE_AUTHOR;
 
 # Field, Type, Null, Key, Default, Extra
 'author_order', 'int', 'YES', '', NULL, ''
