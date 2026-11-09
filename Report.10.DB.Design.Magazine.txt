@@ -1,0 +1,147 @@
+DATABASE DESIGN REPORT Magazine and Article Management Database
+
+1.  PURPOSE AND REQUIREMENTS
+
+A  database to manage information about the magazines that you buy habitually.
+- For each magazine, its title, the ISSN (code that identifies the publication), number and year are stored.
+- Articles, including its title, page of beginning and page of ending. It is assumed that there are no two articles with the same title.
+- Article can be written by several authors 
+- Authors, whose name, e-mail address and ascription are stored. 
+- A number that indicates the order of has to be stored.
+
+2.  CONCEPTUAL MODEL
+
+The conceptual model contains three main entity types and one associative relationship:
+MAGAZINE - Magazine title - ISSN - Issue number - Year
+ARTICLE - Article title - Beginning page - Ending page
+AUTHOR - E-mail address - Name - Affiliation
+
+Relationships: 
+- One MAGAZINE ISSUE contains many ARTICLE records. 
+- Each ARTICLE belongs to one MAGAZINE ISSUE. 
+- ARTICLE and AUTHOR have a many-to-many relationship: 
+ + An article has one or more authors, 
+ + An author write many articles. 
+
+3.  TABLE
+PUBLICATION(ISSN, publication_name)
+- Primary key: (ISSN)
+
+MAGAZINE(issue_number, magazine_title, ISSN, year) 
+- Primary key: (ISSN, issue_number, year)
+- Foreign key: (ISSN) references PUBLICATION
+
+ARTICLE(article_id, article_title, beginning_page, ending_page, ISSN, issue_number, year) 
+- Primary key: (article_id)
+- Foreign key: (ISSN, issue_number, year) references MAGAZINE
+
+AUTHOR(author_id, author_name, author_email, affiliation) 
+- Primary key: author_id
+
+ARTICLE_AUTHOR(author_order, article_id, author_id)
+- Primary key: (article_id, author_id)
+- Foreign key: (article_id) references ARTICLE
+- Foreign key: (author_id) references AUTHOR
+
+4.SQL COMMANDS
+
+-- Create the database
+CREATE DATABASE magazine;
+
+-- Select the database
+USE magazine;
+
+-- 1. PUBLICATION
+CREATE TABLE PUBLICATION (
+    ISSN VARCHAR(20),
+    publication_name VARCHAR(255),
+    PRIMARY KEY (ISSN)
+);
+
+-- 2. MAGAZINE
+CREATE TABLE MAGAZINE (
+    issue_number INT,
+    magazine_title VARCHAR(255),
+    ISSN VARCHAR(20),
+    year INT,
+    PRIMARY KEY (ISSN, issue_number, year),
+    FOREIGN KEY (ISSN) REFERENCES PUBLICATION(ISSN)
+);
+
+-- 3. ARTICLE
+CREATE TABLE ARTICLE (
+    article_id INT,
+    article_title VARCHAR(255),
+    beginning_page INT,
+    ending_page INT,
+    ISSN VARCHAR(20),
+    issue_number INT,
+    year INT,
+    PRIMARY KEY (article_id),
+    FOREIGN KEY (ISSN, issue_number, year)
+        REFERENCES MAGAZINE(ISSN, issue_number, year)
+);
+
+-- 4. AUTHOR
+CREATE TABLE AUTHOR (
+    author_id INT,
+    author_name VARCHAR(255),
+    author_email VARCHAR(255),
+    affiliation VARCHAR(255),
+    PRIMARY KEY (author_id)
+);
+
+-- 5. ARTICLE_AUTHOR
+CREATE TABLE ARTICLE_AUTHOR (
+    author_order INT,
+    article_id INT,
+    author_id INT,
+    PRIMARY KEY (article_id, author_id),
+    FOREIGN KEY (article_id) REFERENCES ARTICLE(article_id),
+    FOREIGN KEY (author_id) REFERENCES AUTHOR(author_id)
+);
+
+
+5.  DESCRIBE COMMANDS AND EXPECTED OUTPUTS
+
+5.1 DESCRIBE PUBLICATION;
+
+# Field, Type, Null, Key, Default, Extra
+'ISSN', 'varchar(20)', 'NO', 'PRI', NULL, ''
+'publication_name', 'varchar(255)', 'YES', '', NULL, ''
+
+
+5.2 DESCRIBE MAGAZINE;
+
+# Field, Type, Null, Key, Default, Extra
+'issue_number', 'int', 'NO', 'PRI', NULL, ''
+'magazine_title', 'varchar(255)', 'YES', '', NULL, ''
+'ISSN', 'varchar(20)', 'NO', 'PRI', NULL, ''
+'year', 'int', 'NO', 'PRI', NULL, ''
+
+5.3 DESCRIBE ARTICLE;
+
+# Field, Type, Null, Key, Default, Extra
+'article_id', 'int', 'NO', 'PRI', NULL, ''
+'article_title', 'varchar(255)', 'YES', '', NULL, ''
+'beginning_page', 'int', 'YES', '', NULL, ''
+'ending_page', 'int', 'YES', '', NULL, ''
+'ISSN', 'varchar(20)', 'YES', 'MUL', NULL, ''
+'issue_number', 'int', 'YES', '', NULL, ''
+'year', 'int', 'YES', '', NULL, ''
+
+5.4 DESCRIBE AUTHOR;
+
+# Field, Type, Null, Key, Default, Extra
+'author_id', 'int', 'NO', 'PRI', NULL, ''
+'author_name', 'varchar(255)', 'YES', '', NULL, ''
+'author_email', 'varchar(255)', 'YES', '', NULL, ''
+'affiliation', 'varchar(255)', 'YES', '', NULL, ''
+
+
+5.4 DESCRIBE ARTICLE_AUTHOR;
+
+# Field, Type, Null, Key, Default, Extra
+'author_order', 'int', 'YES', '', NULL, ''
+'article_id', 'int', 'NO', 'PRI', NULL, ''
+'author_id', 'int', 'NO', 'PRI', NULL, ''
