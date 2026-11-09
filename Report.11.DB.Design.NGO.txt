@@ -1,0 +1,143 @@
+Labwork 5.11:
+
+1.  PURPOSE AND REQUIREMENTS
+
+A Non-Government Organization (NGO) wants to prepare a database for all its projects. 
+It has diverse head offices in several countries which take manage and coordinate the projects of that country.
+
+On head offices, an identifier, the city and country where it is located, its address, a phone number and the name of the director are stored. 
+Every head office manages a set of projects, with a code, a title, dates of beginning and end, the assigned budget and the name of the person in charge. 
+One project is formed by a set of actions that can affect to several cities.
+
+We want to know what actions are realised in each city, storing its name, country and no of inhabitants. 
+We also need an identifier to differentiate them. 
+Also there is wished the investment of the project that corresponds to the city and a small description of the action
+
+2. CONCEPTUAL MODEL
+
+COUNTRY(country_id (PK), country_name)
+CITY(city_id (PK), city_name, population, country_id (FK))
+HEAD_OFFICE (office_id (PK), city_id (FK), address, phone_number)
+EMPLOYEE(employee_id (PK), employee_name)
+OFFICE_EMPLOYEE(office_id (PK, FK), employee_id (PK, FK), date_from (PK), date_to, title)
+PROJECT(projects_code (PK), projects_title, start_date, end_date, budget, office_id (FK), employee_id (FK))
+ACTION_CODEX(action_code (PK), action_name)
+ACTION(projects_code (PK, FK), action_code (PK, FK), city_id (PK, FK), action_description, investment)
+
+3. CODES
+CREATE DATABASE NGO;
+USE NGO;
+
+CREATE TABLE COUNTRY (
+    country_id INT PRIMARY KEY AUTO_INCREMENT,
+    country_name VARCHAR(100) NOT NULL);
+    
+CREATE TABLE CITY (
+    city_id INT PRIMARY KEY AUTO_INCREMENT,
+    city_name VARCHAR(100) NOT NULL,
+    population BIGINT,
+    country_id INT NOT NULL,
+    FOREIGN KEY (country_id) REFERENCES COUNTRY(country_id));
+
+CREATE TABLE HEAD_OFFICE (
+    office_id INT PRIMARY KEY AUTO_INCREMENT,
+    city_id INT NOT NULL,
+    address VARCHAR(255),
+    phone_number VARCHAR(30),
+    FOREIGN KEY (city_id) REFERENCES CITY(city_id));
+    
+CREATE TABLE EMPLOYEE (
+    employee_id INT PRIMARY KEY AUTO_INCREMENT,
+    employee_name VARCHAR(100) NOT NULL);
+
+CREATE TABLE OFFICE_EMPLOYEE (
+    office_id INT,
+    employee_id INT,
+    date_from DATE,
+    date_to DATE,
+    title VARCHAR(100),
+    PRIMARY KEY (office_id, employee_id, date_from),
+    FOREIGN KEY (office_id) REFERENCES HEAD_OFFICE(office_id),
+    FOREIGN KEY (employee_id) REFERENCES EMPLOYEE(employee_id));
+
+CREATE TABLE PROJECT (
+    project_code VARCHAR(20) PRIMARY KEY,
+    project_title VARCHAR(255) NOT NULL,
+    start_date DATE,
+    end_date DATE,
+    budget DECIMAL(15,2),
+    employee_id INT NOT NULL,
+    office_id INT NOT NULL,
+    FOREIGN KEY (employee_id) REFERENCES EMPLOYEE(employee_id),
+    FOREIGN KEY (office_id) REFERENCES HEAD_OFFICE(office_id));
+
+CREATE TABLE ACTION_CODEX (
+    action_code VARCHAR(20) PRIMARY KEY,
+    action_name VARCHAR(100) NOT NULL);
+
+CREATE TABLE ACTION (
+    project_code VARCHAR(20),
+    action_code VARCHAR(20),
+    city_id INT,
+    action_description TEXT,
+    investment DECIMAL(15,2),
+    PRIMARY KEY (project_code, action_code, city_id),
+    FOREIGN KEY (project_code) REFERENCES PROJECT(project_code),
+    FOREIGN KEY (action_code) REFERENCES ACTION_CODEX(action_code),
+    FOREIGN KEY (city_id) REFERENCES CITY(city_id));
+
+4. DESCRIBE
+DESCRIBE COUNTRY;
+# Field, Type, Null, Key, Default, Extra
+'country_id', 'int', 'NO', 'PRI', NULL, 'auto_increment'
+'country_name', 'varchar(100)', 'NO', '', NULL, ''
+
+DESCRIBE CITY;
+# Field, Type, Null, Key, Default, Extra
+'city_id', 'int', 'NO', 'PRI', NULL, 'auto_increment'
+'city_name', 'varchar(100)', 'NO', '', NULL, ''
+'population', 'bigint', 'YES', '', NULL, ''
+'country_id', 'int', 'NO', 'MUL', NULL, ''
+
+DESCRIBE HEAD_OFFICE;
+# Field, Type, Null, Key, Default, Extra
+'office_id', 'int', 'NO', 'PRI', NULL, 'auto_increment'
+'city_id', 'int', 'NO', 'MUL', NULL, ''
+'address', 'varchar(255)', 'YES', '', NULL, ''
+'phone_number', 'varchar(30)', 'YES', '', NULL, ''
+
+DESCRIBE EMPLOYEE;
+# Field, Type, Null, Key, Default, Extra
+'employee_id', 'int', 'NO', 'PRI', NULL, 'auto_increment'
+'employee_name', 'varchar(100)', 'NO', '', NULL, ''
+
+DESCRIBE OFFICE_EMPLOYEE;
+# Field, Type, Null, Key, Default, Extra
+'office_id', 'int', 'NO', 'PRI', NULL, ''
+'employee_id', 'int', 'NO', 'PRI', NULL, ''
+'date_from', 'date', 'NO', 'PRI', NULL, ''
+'date_to', 'date', 'YES', '', NULL, ''
+'title', 'varchar(100)', 'YES', '', NULL, ''
+
+DESCRIBE PROJECT;
+# Field, Type, Null, Key, Default, Extra
+'project_code', 'varchar(20)', 'NO', 'PRI', NULL, ''
+'project_title', 'varchar(255)', 'NO', '', NULL, ''
+'start_date', 'date', 'YES', '', NULL, ''
+'end_date', 'date', 'YES', '', NULL, ''
+'budget', 'decimal(15,2)', 'YES', '', NULL, ''
+'employee_id', 'int', 'NO', 'MUL', NULL, ''
+'office_id', 'int', 'NO', 'MUL', NULL, ''
+
+DESCRIBE ACTION_CODEX;
+# Field, Type, Null, Key, Default, Extra
+'action_code', 'varchar(20)', 'NO', 'PRI', NULL, ''
+'action_name', 'varchar(100)', 'NO', '', NULL, ''
+
+DESCRIBE ACTION;
+# Field, Type, Null, Key, Default, Extra
+'project_code', 'varchar(20)', 'NO', 'PRI', NULL, ''
+'action_code', 'varchar(20)', 'NO', 'PRI', NULL, ''
+'city_id', 'int', 'NO', 'PRI', NULL, ''
+'action_description', 'text', 'YES', '', NULL, ''
+'investment', 'decimal(15,2)', 'YES', '', NULL, ''
